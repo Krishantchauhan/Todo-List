@@ -1,10 +1,12 @@
-'use strict';
-
 const itemInput = document.getElementById('item-input');
 const itemForm = document.getElementById('item-form');
 const itemList = document.getElementById('item-list');
 const itemFilter = document.getElementById('filter');
 const clearBtn = document.getElementById('clear');
+const formButton = itemForm.querySelector('button');
+
+let isEditMode = false;
+// console.log(formButton);
 
 // todo:fetching from local and display
 const displayItems = () => {
@@ -27,6 +29,14 @@ const OnAddItemSubmit = (e) => {
   if (itemInput.value === '') {
     alert('Please add an item !');
     return;
+  }
+
+  if (isEditMode) {
+    const itemEdit = itemList.querySelector('.edit-mode');
+    removeFromStroage(itemEdit.textContent);
+    itemEdit.classList.remove('edit-mode');
+    itemEdit.remove();
+    isEditMode = false;
   }
 
   addItemToDOM(newItem);
@@ -72,6 +82,7 @@ const addItemToLocal = (item) => {
 
   localStorage.setItem('items', JSON.stringify(itemFromStroage));
 };
+
 //get an item from local Stroage
 function getItemFromStroage() {
   let itemFromStroage;
@@ -88,8 +99,25 @@ function getItemFromStroage() {
 const onClickItems = (e) => {
   if (e.target.parentElement.classList.contains('remove-item')) {
     removeItem(e.target.parentElement.parentElement);
+  } else {
+    setItemToEdit(e.target);
   }
 };
+
+
+
+function setItemToEdit(item) {
+  isEditMode = true;
+
+  itemList.querySelectorAll('li').forEach((i) => (i.style.color = '#333'));
+
+  item.style.color = '#ccc';
+  item.className = 'edit-mode';
+  formButton.innerHTML = "<i class='fa-solid fa-pen' ></i> Update Item";
+  formButton.style.backgroundColor = 'green';
+
+  itemInput.value = item.textContent;
+}
 
 function removeItem(item) {
   // console.log(item.textContent);
@@ -143,6 +171,7 @@ const doFilter = (e) => {
 
 // TODO:UI;
 const checkUI = () => {
+  itemInput.value = '';
   const items = itemList.querySelectorAll('li');
   if (items.length === 0) {
     itemFilter.style.display = 'none';
@@ -151,6 +180,10 @@ const checkUI = () => {
     itemFilter.style.display = 'block';
     clearBtn.style.display = 'block';
   }
+
+  formButton.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+  formButton.style.backgroundColor = '#333';
+  isEditMode = false;
 };
 
 itemForm.addEventListener('submit', OnAddItemSubmit);
