@@ -37,6 +37,11 @@ const OnAddItemSubmit = (e) => {
     itemEdit.classList.remove('edit-mode');
     itemEdit.remove();
     isEditMode = false;
+  } else {
+    if (checkItemIsExist(newItem)) {
+      alert('Item is Already on List');
+      return;
+    }
   }
 
   addItemToDOM(newItem);
@@ -99,12 +104,15 @@ function getItemFromStroage() {
 const onClickItems = (e) => {
   if (e.target.parentElement.classList.contains('remove-item')) {
     removeItem(e.target.parentElement.parentElement);
-  } else {
+  } else if (e.target.closest('li')) {
     setItemToEdit(e.target);
   }
 };
 
-
+function checkItemIsExist(item) {
+  const itemFromStroage = getItemFromStroage();
+  return itemFromStroage.includes(item);
+}
 
 function setItemToEdit(item) {
   isEditMode = true;
@@ -137,7 +145,7 @@ function removeFromStroage(item) {
   itemFromStroage = itemFromStroage.filter((txt) => txt !== item);
   localStorage.setItem('items', JSON.stringify(itemFromStroage));
 
-  console.log(itemFromStroage);
+  // console.log(itemFromStroage);
 }
 
 const clearItems = (e) => {
