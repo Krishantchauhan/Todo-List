@@ -13,6 +13,8 @@ const displayItems = () => {
   items.forEach((item) => {
     addItemToDOM(item);
   });
+
+  checkUI();
 };
 
 //Todo:Adding Item
@@ -83,20 +85,40 @@ function getItemFromStroage() {
 
 // Todo: RemoveItem
 
-const removeItem = (e) => {
+const onClickItems = (e) => {
   if (e.target.parentElement.classList.contains('remove-item')) {
-    if (confirm('Are You Sure ?')) {
-      e.target.parentElement.parentElement.remove(); //targetting li
-      checkUI();
-    }
+    removeItem(e.target.parentElement.parentElement);
   }
 };
+
+function removeItem(item) {
+  // console.log(item.textContent);
+
+  if (confirm('Are you Sure?')) {
+    //Remove from DOM
+    item.remove();
+    //remove from Local Stroage
+    removeFromStroage(item.textContent);
+    checkUI();
+  }
+}
+
+function removeFromStroage(item) {
+  let itemFromStroage = getItemFromStroage();
+
+  itemFromStroage = itemFromStroage.filter((txt) => txt !== item);
+  localStorage.setItem('items', JSON.stringify(itemFromStroage));
+
+  console.log(itemFromStroage);
+}
 
 const clearItems = (e) => {
   // console.log(itemList);
   while (itemList.firstChild) {
     itemList.firstChild.remove();
   }
+  //clear from local Stroage
+  localStorage.removeItem('items');
   checkUI();
   // console.log(e.target);
 };
@@ -132,7 +154,7 @@ const checkUI = () => {
 };
 
 itemForm.addEventListener('submit', OnAddItemSubmit);
-itemList.addEventListener('click', removeItem);
+itemList.addEventListener('click', onClickItems);
 clearBtn.addEventListener('click', clearItems);
 itemFilter.addEventListener('input', doFilter);
 document.addEventListener('DOMContentLoaded', displayItems);
