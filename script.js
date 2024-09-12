@@ -6,6 +6,15 @@ const itemList = document.getElementById('item-list');
 const itemFilter = document.getElementById('filter');
 const clearBtn = document.getElementById('clear');
 
+// todo:fetching from local and display
+const displayItems = () => {
+  const items = getItemFromStroage();
+
+  items.forEach((item) => {
+    addItemToDOM(item);
+  });
+};
+
 //Todo:Adding Item
 const OnAddItemSubmit = (e) => {
   e.preventDefault();
@@ -52,21 +61,25 @@ function getIcon(classes) {
   return icon;
 }
 
-//todo:localStorage
+//todo:Add an item to localStorage
 const addItemToLocal = (item) => {
   // console.log(item.parentElement);
-  let itemFromStroage;
-
-  if (localStorage.getItem('items') === null) {
-    itemFromStroage = [];
-  } else {
-    itemFromStroage = JSON.parse(localStorage.getItem('items'));
-  }
+  const itemFromStroage = getItemFromStroage();
 
   itemFromStroage.push(item);
 
   localStorage.setItem('items', JSON.stringify(itemFromStroage));
 };
+//get an item from local Stroage
+function getItemFromStroage() {
+  let itemFromStroage;
+  if (localStorage.getItem('items') === null) {
+    itemFromStroage = [];
+  } else {
+    itemFromStroage = JSON.parse(localStorage.getItem('items'));
+  }
+  return itemFromStroage;
+}
 
 // Todo: RemoveItem
 
@@ -122,5 +135,6 @@ itemForm.addEventListener('submit', OnAddItemSubmit);
 itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems);
 itemFilter.addEventListener('input', doFilter);
+document.addEventListener('DOMContentLoaded', displayItems);
 
 checkUI();
