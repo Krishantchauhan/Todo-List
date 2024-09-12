@@ -2,10 +2,10 @@
 
 const itemInput = document.getElementById('item-input');
 const itemForm = document.getElementById('item-form');
-const itemListEl = document.getElementById('item-list');
+const itemList = document.getElementById('item-list');
+const clearBtn = document.getElementById('clear');
 
-
-
+//Todo:Adding Item
 const addItem = (e) => {
   e.preventDefault();
 
@@ -17,9 +17,11 @@ const addItem = (e) => {
   const btn = getButton('remove-item btn-link text-red');
   li.appendChild(btn);
 
-  itemListEl.appendChild(li);
+  itemList.appendChild(li);
 
   console.log(li);
+
+  itemInput.value = '';
 };
 
 function getButton(classes) {
@@ -36,4 +38,22 @@ function getIcon(classes) {
   return icon;
 }
 
+// Todo: RemoveItem
+
+const removeItem = (e) => {
+  if (e.target.parentElement.classList.contains('remove-item')) {
+    e.target.parentElement.parentElement.remove(); //targetting li
+  }
+};
+
+const clearItems = (e) => {
+  // console.log(itemList);
+  while (itemList.firstChild) {
+    itemList.firstChild.remove();
+  }
+  // console.log(e.target);
+};
+
 itemForm.addEventListener('submit', addItem);
+itemList.addEventListener('click', removeItem);
+clearBtn.addEventListener('click', clearItems);
