@@ -7,17 +7,28 @@ const itemFilter = document.getElementById('filter');
 const clearBtn = document.getElementById('clear');
 
 //Todo:Adding Item
-const addItem = (e) => {
+const OnAddItemSubmit = (e) => {
   e.preventDefault();
 
-  const item = document.createTextNode(itemInput.value);
+  // console.log(itemInput);
+  // const newItem = document.createTextNode(itemInput.value);
+  const newItem = itemInput.value;
   if (itemInput.value === '') {
     alert('Please add an item !');
     return;
   }
-  const li = document.createElement('li');
 
-  li.appendChild(item);
+  addItemToDOM(newItem);
+  addItemToLocal(newItem);
+
+  itemInput.value = '';
+
+  checkUI();
+};
+
+function addItemToDOM(item) {
+  const li = document.createElement('li');
+  li.appendChild(document.createTextNode(item));
 
   const btn = getButton('remove-item btn-link text-red');
   li.appendChild(btn);
@@ -25,11 +36,7 @@ const addItem = (e) => {
   itemList.appendChild(li);
 
   // console.log(li);
-
-  itemInput.value = '';
-
-  checkUI();
-};
+}
 
 function getButton(classes) {
   const btn = document.createElement('button');
@@ -44,6 +51,22 @@ function getIcon(classes) {
   icon.className = 'fa-solid fa-xmark';
   return icon;
 }
+
+//todo:localStorage
+const addItemToLocal = (item) => {
+  // console.log(item.parentElement);
+  let itemFromStroage;
+
+  if (localStorage.getItem('items') === null) {
+    itemFromStroage = [];
+  } else {
+    itemFromStroage = JSON.parse(localStorage.getItem('items'));
+  }
+
+  itemFromStroage.push(item);
+
+  localStorage.setItem('items', JSON.stringify(itemFromStroage));
+};
 
 // Todo: RemoveItem
 
@@ -95,7 +118,7 @@ const checkUI = () => {
   }
 };
 
-itemForm.addEventListener('submit', addItem);
+itemForm.addEventListener('submit', OnAddItemSubmit);
 itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems);
 itemFilter.addEventListener('input', doFilter);
